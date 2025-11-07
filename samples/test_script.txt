@@ -1,0 +1,58 @@
+INT. LAB – NIGHT
+A cramped NEON-LIT LAB hums with servers and monitors. CABLES snake across the floor.
+
+JESS
+Okay, one more compile and then I swear I’m done touching this parser.
+
+MARCO
+(leaning over her shoulder)
+Famous last words. What happens if it sees an FDX with no slug lines?
+
+Jess taps a key. The monitors FLASH as lines of XML scroll by.
+
+JESS
+Then we write a bug ticket and pretend it was a feature request.
+
+
+EXT. CITY ROOFTOP – DAWN
+The sun creeps over the skyline. A small DRONE hovers at the edge of the roof.
+
+MARCO
+If your script analyzer can find this scene, it can find anything.
+
+JESS
+I’m logging location, time of day, and every character per scene. The drone even gets a credit.
+
+The drone BEEPS and nods as if in agreement.
+
+
+INT. EDIT BAY – DAY
+Multiple MONITORS show timelines, color wheels, and script pages side by side.
+
+RILEY
+So this app of yours can highlight every line for a single character?
+
+JESS
+(points at the screen)
+Yep. Pick a character, export a script just for them. Editors, actors, even casting can use it.
+
+RILEY
+Nice. Does it handle overlapping scenes and flashbacks?
+
+MARCO
+We’re calling that version two, so we can still ship version one.
+
+
+EXT. CITY STREET – NIGHT
+Traffic WHOOSHES by. Jess walks, staring at a tablet running the SCRIPT ANALYZER APP.
+
+JESS
+Scene count... four. Characters per scene... three here, two on the roof, plus one very proud drone.
+
+RILEY
+And our test user?
+
+JESS
+Some poor developer trying to parse this FDX file.
+
+CUT TO BLACK.
