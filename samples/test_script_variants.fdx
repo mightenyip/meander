@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FinalDraft DocumentType="Script" Template="No">
+  <Content>
+    <Paragraph Type="Scene Heading" SceneNumber="1"><Text>INT. OFFICE – DAY</Text></Paragraph>
+    <Paragraph Type="Action"><Text>A modern office space. JOHN DOE sits at his desk.</Text></Paragraph>
+    <Paragraph Type="Character"><Text>JOHN DOE</Text></Paragraph>
+    <Paragraph Type="Dialogue"><Text>This is my first line in the scene.</Text></Paragraph>
+    <Paragraph Type="Action"><Text>John continues speaking.</Text></Paragraph>
+    <Paragraph Type="Character"><Text>JOHN DOE (CONT'D)</Text></Paragraph>
+    <Paragraph Type="Dialogue"><Text>And this is my continued dialogue.</Text></Paragraph>
+    <Paragraph Type="Scene Heading" SceneNumber="2"><Text>EXT. PARK – DAY</Text></Paragraph>
+    <Paragraph Type="Action"><Text>John is seen walking in the park. His voice is heard from off-screen.</Text></Paragraph>
+    <Paragraph Type="Character"><Text>JOHN DOE (O.S.)</Text></Paragraph>
+    <Paragraph Type="Dialogue"><Text>I'm talking from off-screen right now.</Text></Paragraph>
+    <Paragraph Type="Scene Heading" SceneNumber="3"><Text>INT. CAR – DAY</Text></Paragraph>
+    <Paragraph Type="Action"><Text>John drives while narrating. We see his reflection in the rearview mirror.</Text></Paragraph>
+    <Paragraph Type="Character"><Text>JOHN DOE (V.O.)</Text></Paragraph>
+    <Paragraph Type="Dialogue"><Text>This is my voice-over narration.</Text></Paragraph>
+    <Paragraph Type="Scene Heading" SceneNumber="4"><Text>INT. CONFERENCE ROOM – DAY</Text></Paragraph>
+    <Paragraph Type="Action"><Text>Two people named John are in the room. One is labeled as number two.</Text></Paragraph>
+    <Paragraph Type="Character"><Text>JOHN DOE</Text></Paragraph>
+    <Paragraph Type="Dialogue"><Text>I'm the first John.</Text></Paragraph>
+    <Paragraph Type="Character"><Text>JOHN DOE #2</Text></Paragraph>
+    <Paragraph Type="Dialogue"><Text>I'm the second John.</Text></Paragraph>
+    <Paragraph Type="Scene Heading" SceneNumber="5"><Text>INT. STUDIO – NIGHT</Text></Paragraph>
+    <Paragraph Type="Action"><Text>John is recording voice-over in a studio.</Text></Paragraph>
+    <Paragraph Type="Character"><Text>JOHN DOE (V.O.)</Text></Paragraph>
+    <Paragraph Type="Dialogue"><Text>Recording another voice-over line.</Text></Paragraph>
+    <Paragraph Type="Action"><Text>John continues speaking.</Text></Paragraph>
+    <Paragraph Type="Character"><Text>JOHN DOE (CONT'D)</Text></Paragraph>
+    <Paragraph Type="Dialogue"><Text>More continued dialogue.</Text></Paragraph>
+    <Paragraph Type="Transition"><Text>FADE OUT.</Text></Paragraph>
+  </Content>
+</FinalDraft>
+

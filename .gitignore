@@ -1,0 +1,48 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Reports and output
+reports/
+test_output/
+test_reports/
+test_variants_reports/
+test_variants_detailed/
+*.csv
+*.json
+*.txt
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project specific
+samples/*.fdx
+samples/*.pdf
+samples/*.txt
+!samples/test_script.fdx
+!samples/test_script.txt
+!samples/test_script_variants.fdx
+

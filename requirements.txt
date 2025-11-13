@@ -11,3 +11,5 @@ streamlit==1.40.0
 black==24.3.0
 flake8==7.1.1
 pytest==8.3.3
+pdfplumber==0.11.0
+pypdf==4.0.1
