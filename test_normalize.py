@@ -24,3 +24,4 @@ for name in test_names:
     normalized = normalize_character_name(name)
     print(f"{name:40} -> {normalized}")
 
+
