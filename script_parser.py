@@ -310,12 +310,16 @@ class PDFParser:
                     page_lines = [line.strip() for line in page_text.split('\n') if line.strip()]
                     lines.extend(page_lines)
             
-            # Try to extract title from first page
-            if lines:
-                # Title is usually in first few lines, often centered or bold
-                potential_title = lines[0]
-                if len(potential_title) > 0 and len(potential_title) < 100:
-                    self.script_data.title = potential_title
+            # Try to extract title by looking for "TITLES: ..." pattern
+            for line in lines:
+                # Look for "TITLES:" or "TITLE:" pattern (case-insensitive)
+                match = re.match(r'^TITLES?\s*:\s*(.+)$', line, re.IGNORECASE)
+                if match:
+                    self.script_data.title = match.group(1).strip()
+                    break
+            
+            # If no "TITLES:" pattern found, don't set a title
+            # (previously it was taking the first line, which was incorrect)
             
             # Parse lines into script elements
             self._parse_lines(lines)

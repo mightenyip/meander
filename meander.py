@@ -6,6 +6,8 @@ Streamlit UI for parsing and analyzing script files
 
 import streamlit as st
 import json
+import csv
+import io
 from script_parser import parse_fdx_bytes, parse_pdf_bytes, detect_file_type
 
 st.set_page_config(page_title="Script Analyzer (Beta)", layout="wide")
@@ -52,7 +54,11 @@ if uploaded_file is not None:
         with col2:
             st.metric("Characters", len(result.get("characters", {})))
         with col3:
-            st.metric("Title", result.get("title", "Untitled")[:30] if result.get("title") else "Untitled")
+            title = result.get("title", "").strip()
+            if title:
+                st.metric("Title", title[:30] + "..." if len(title) > 30 else title)
+            else:
+                st.metric("Title", "—")
         with col4:
             total_lines = sum(char.get("total_lines", 0) for char in result.get("characters", {}).values())
             st.metric("Total Lines", total_lines)
@@ -77,6 +83,88 @@ if uploaded_file is not None:
                     # Show top 10 locations
                     locations = sorted(summary["location_breakdown"].items(), key=lambda x: x[1], reverse=True)[:10]
                     st.json(dict(locations))
+        
+        # Export section
+        st.subheader("Export")
+        base_name = uploaded_file.name.rsplit('.', 1)[0]
+        
+        # Helper functions to generate CSV strings
+        def generate_scenes_csv(result):
+            """Generate CSV string for scenes"""
+            output = io.StringIO()
+            writer = csv.writer(output)
+            writer.writerow([
+                "Scene #", "Slug Line", "INT/EXT", "Location", "Time of Day",
+                "Characters", "Line Count"
+            ])
+            
+            for scene in result.get("scenes", []):
+                characters_str = ", ".join(scene.get("characters", []))
+                writer.writerow([
+                    scene.get("scene_number", ""),
+                    scene.get("slug_line", ""),
+                    scene.get("int_ext", ""),
+                    scene.get("location", ""),
+                    scene.get("time_of_day", ""),
+                    characters_str,
+                    scene.get("line_count", 0)
+                ])
+            
+            return output.getvalue()
+        
+        def generate_characters_csv(result):
+            """Generate CSV string for characters"""
+            output = io.StringIO()
+            writer = csv.writer(output)
+            writer.writerow([
+                "Character", "Canonical Name", "Total Lines", "Dialogue Count",
+                "Scenes", "First Appearance", "Last Appearance"
+            ])
+            
+            for char_name, char in sorted(result.get("characters", {}).items()):
+                writer.writerow([
+                    char.get("name_raw", char_name),
+                    char.get("name_canonical", ""),
+                    char.get("total_lines", 0),
+                    char.get("dialogue_count", 0),
+                    len(char.get("scenes", [])),
+                    char.get("first_appearance", -1),
+                    char.get("last_appearance", -1)
+                ])
+            
+            return output.getvalue()
+        
+        # Download buttons in columns
+        col1, col2, col3 = st.columns(3)
+        
+        with col1:
+            json_str = json.dumps(result, indent=2)
+            st.download_button(
+                label="📄 Download JSON",
+                data=json_str,
+                file_name=f"{base_name}_report.json",
+                mime="application/json",
+            )
+        
+        with col2:
+            if "scenes" in result:
+                scenes_csv = generate_scenes_csv(result)
+                st.download_button(
+                    label="📊 Download Scenes CSV",
+                    data=scenes_csv,
+                    file_name=f"{base_name}_scenes.csv",
+                    mime="text/csv",
+                )
+        
+        with col3:
+            if "characters" in result:
+                characters_csv = generate_characters_csv(result)
+                st.download_button(
+                    label="👥 Download Characters CSV",
+                    data=characters_csv,
+                    file_name=f"{base_name}_characters.csv",
+                    mime="text/csv",
+                )
         
         st.subheader("Parsed Output")
         
@@ -106,13 +194,4 @@ if uploaded_file is not None:
                 for char_name, char_data in sorted_chars:
                     with st.expander(f"{char_data.get('name_canonical', char_name)} ({char_data.get('total_lines', 0)} lines)"):
                         st.json(char_data)
-        
-        # Download button
-        json_str = json.dumps(result, indent=2)
-        st.download_button(
-            label="Download JSON",
-            data=json_str,
-            file_name=f"{uploaded_file.name.rsplit('.', 1)[0]}_report.json",
-            mime="application/json",
-        )
 
