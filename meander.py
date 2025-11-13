@@ -13,7 +13,16 @@ from script_parser import parse_fdx_bytes, parse_pdf_bytes, detect_file_type
 st.set_page_config(page_title="Script Analyzer (Beta)", layout="wide")
 
 st.title("Script Analyzer (Beta)")
-st.write("Upload a Final Draft `.fdx` or `.pdf` file to see the parsed structure.")
+
+st.markdown("""
+**Speed up your production process!** Parse your scripts to get scene information, character breakdowns, 
+and location analysis. Extract insights from your scripts in seconds.
+""")
+
+st.markdown("*Developed by Mighten Yip, 2025*")
+
+st.write("")
+st.write("Upload a script draft `.fdx` or `.pdf` file to see the parsed structure.")
 
 uploaded_file = st.file_uploader("Choose a script file", type=["fdx", "pdf"])
 
