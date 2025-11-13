@@ -8,6 +8,7 @@ import re
 import json
 import csv
 import argparse
+import io
 from dataclasses import dataclass, field, asdict
 from xml.etree import ElementTree as ET
 from collections import defaultdict
@@ -62,10 +63,22 @@ class FDXParser:
     TIME_PATTERN = r'[–-]\s*(DAY|NIGHT|DAWN|DUSK|EVENING|MORNING|CONTINUOUS|LATER|SAME)\b'
     LOCATION_PATTERN = r'^(?:INT\.?|EXT\.?|INT\.?/EXT\.?|INT/EXT)\s+(.+?)(?:\s*[–-]\s*(?:DAY|NIGHT|DAWN|DUSK|EVENING|MORNING|CONTINUOUS|LATER|SAME))'
     
-    def __init__(self, file_path: str):
-        self.file_path = file_path
-        self.tree = ET.parse(file_path)
-        self.root = self.tree.getroot()
+    def __init__(self, file_path: str = None, file_bytes: bytes = None):
+        if file_path:
+            self.file_path = file_path
+            self.tree = ET.parse(file_path)
+            self.root = self.tree.getroot()
+        elif file_bytes:
+            self.file_path = None
+            # Decode bytes to string for XML parsing
+            try:
+                xml_string = file_bytes.decode('utf-8')
+            except UnicodeDecodeError:
+                # Try other common encodings
+                xml_string = file_bytes.decode('latin-1')
+            self.root = ET.fromstring(xml_string)
+        else:
+            raise ValueError("Either file_path or file_bytes must be provided")
         self.script_data = ScriptData()
         
     def parse(self) -> ScriptData:
@@ -267,8 +280,14 @@ class PDFParser:
     # Character name pattern (all caps, centered, not a scene heading)
     CHARACTER_PATTERN = r'^[A-Z][A-Z\s\.\-\']+$'
     
-    def __init__(self, file_path: str):
-        self.file_path = file_path
+    def __init__(self, file_path: str = None, file_bytes: bytes = None):
+        if file_path:
+            self.file_path = file_path
+        elif file_bytes:
+            self.file_path = None
+            self.file_bytes = file_bytes
+        else:
+            raise ValueError("Either file_path or file_bytes must be provided")
         self.script_data = ScriptData()
         
     def parse(self) -> ScriptData:
@@ -278,7 +297,8 @@ class PDFParser:
         except ImportError:
             raise ImportError("pdfplumber is required for PDF parsing. Install it with: pip install pdfplumber")
         
-        with pdfplumber.open(self.file_path) as pdf:
+        pdf_source = self.file_path if self.file_path else io.BytesIO(self.file_bytes)
+        with pdfplumber.open(pdf_source) as pdf:
             # Extract text from all pages
             lines = []
             total_pages = len(pdf.pages)
@@ -772,10 +792,15 @@ class ReportGenerator:
         return summary
 
 
-def detect_file_type(file_path: str) -> str:
+def detect_file_type(file_path: str = None, file_bytes: bytes = None, filename: str = None) -> str:
     """Detect file type from extension"""
-    path = Path(file_path)
-    ext = path.suffix.lower()
+    if file_path:
+        path = Path(file_path)
+        ext = path.suffix.lower()
+    elif filename:
+        ext = Path(filename).suffix.lower()
+    else:
+        raise ValueError("Either file_path or filename must be provided")
     
     if ext == '.fdx':
         return 'fdx'
@@ -786,6 +811,50 @@ def detect_file_type(file_path: str) -> str:
         return 'fountain'
     else:
         raise ValueError(f"Unsupported file type: {ext}. Supported types: .fdx, .pdf")
+
+
+def parse_fdx_bytes(fdx_bytes: bytes) -> dict:
+    """Parse FDX file from bytes and return JSON report"""
+    parser = FDXParser(file_bytes=fdx_bytes)
+    script_data = parser.parse()
+    
+    report_gen = ReportGenerator(script_data)
+    # Generate the report structure
+    output = {
+        "title": script_data.title,
+        "total_scenes": script_data.total_scenes,
+        "scenes": [asdict(scene) for scene in script_data.scenes],
+        "characters": {name: asdict(char) for name, char in script_data.characters.items()},
+        "summary": {
+            "int_ext_breakdown": report_gen._get_int_ext_breakdown(),
+            "time_of_day_breakdown": report_gen._get_time_of_day_breakdown(),
+            "location_breakdown": report_gen._get_location_breakdown(),
+            "character_summary": report_gen._get_character_summary()
+        }
+    }
+    return output
+
+
+def parse_pdf_bytes(pdf_bytes: bytes) -> dict:
+    """Parse PDF file from bytes and return JSON report"""
+    parser = PDFParser(file_bytes=pdf_bytes)
+    script_data = parser.parse()
+    
+    report_gen = ReportGenerator(script_data)
+    # Generate the report structure
+    output = {
+        "title": script_data.title,
+        "total_scenes": script_data.total_scenes,
+        "scenes": [asdict(scene) for scene in script_data.scenes],
+        "characters": {name: asdict(char) for name, char in script_data.characters.items()},
+        "summary": {
+            "int_ext_breakdown": report_gen._get_int_ext_breakdown(),
+            "time_of_day_breakdown": report_gen._get_time_of_day_breakdown(),
+            "location_breakdown": report_gen._get_location_breakdown(),
+            "character_summary": report_gen._get_character_summary()
+        }
+    }
+    return output
 
 
 def main():
