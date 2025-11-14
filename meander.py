@@ -89,6 +89,16 @@ if uploaded_file is not None:
             with col2:
                 if "location_breakdown" in summary:
                     st.write("**Location Breakdown**")
+                    # TODO: Consider grouping locations hierarchically (e.g., "SCU CAMPUS" as main,
+                    # with sub-locations like "MAIN QUAD", "MAIN STREET" listed underneath)
+                    # This would help organize locations like:
+                    #   "SCU CAMPUS - MAIN QUAD": 1
+                    #   "SCU CAMPUS - MAIN QUAD - AERODESIGN BOOTH": 1
+                    #   "SCU CAMPUS - MAIN STREET": 1
+                    # Into: SCU CAMPUS: 3 scenes
+                    #   • MAIN QUAD: 1 scene
+                    #   • MAIN QUAD - AERODESIGN BOOTH: 1 scene
+                    #   • MAIN STREET: 1 scene
                     # Show top 10 locations
                     locations = sorted(summary["location_breakdown"].items(), key=lambda x: x[1], reverse=True)[:10]
                     st.json(dict(locations))
