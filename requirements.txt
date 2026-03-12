@@ -2,6 +2,12 @@
 streamlit==1.40.0
 pdfplumber==0.11.0
 
+# Auth and database
+supabase==2.10.0
+
+# Payments
+stripe==11.4.1
+
 # Development dependencies (optional, for local development)
 # Uncomment if needed:
 # black==24.3.0
