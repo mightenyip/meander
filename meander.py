@@ -65,8 +65,8 @@ if PAYWALL_ENABLED:
                         try:
                             record_free_usage(email_input, script_name="")
                             current_access = get_access_level(email_input)
-                        except Exception:
-                            pass
+                        except Exception as e:
+                            st.error(f"Usage tracking error: {e}")
                     st.session_state.access = current_access
 
         access = st.session_state.access
