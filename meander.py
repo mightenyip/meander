@@ -59,7 +59,15 @@ if PAYWALL_ENABLED:
             else:
                 with st.spinner("Checking access..."):
                     st.session_state.email = email_input
-                    st.session_state.access = get_access_level(email_input)
+                    current_access = get_access_level(email_input)
+                    # Record email in free_usage on first visit, before any parse
+                    if current_access == AccessLevel.FREE_REMAINING:
+                        try:
+                            record_free_usage(email_input, script_name="")
+                            current_access = get_access_level(email_input)
+                        except Exception:
+                            pass
+                    st.session_state.access = current_access
 
         access = st.session_state.access
 
@@ -190,14 +198,6 @@ if mode == "Single Script":
             import traceback
             st.code(traceback.format_exc())
         else:
-            # Record free usage after a successful parse
-            if PAYWALL_ENABLED and st.session_state.access == AccessLevel.FREE_REMAINING:
-                try:
-                    record_free_usage(st.session_state.email, uploaded_file.name)
-                    st.session_state.access = get_access_level(st.session_state.email)
-                except Exception:
-                    pass  # Don't block the user if usage recording fails
-
             st.success("Parsing complete!")
 
             # Summary stats
