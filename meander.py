@@ -59,6 +59,13 @@ if PAYWALL_ENABLED:
             else:
                 with st.spinner("Checking access..."):
                     st.session_state.email = email_input
+                    try:
+                        from auth import get_free_usage, get_subscription
+                        usage_count = get_free_usage(email_input)
+                        sub = get_subscription(email_input)
+                        st.info(f"Debug — usage count: {usage_count}, subscription: {sub}")
+                    except Exception as e:
+                        st.error(f"Debug — Supabase query error: {e}")
                     current_access = get_access_level(email_input)
                     # Record email in free_usage on first visit, before any parse
                     if current_access == AccessLevel.FREE_REMAINING:
