@@ -64,9 +64,7 @@ if PAYWALL_ENABLED:
         access = st.session_state.access
 
         # Show current plan badge
-        if access == AccessLevel.TEAM:
-            st.success("Team plan — full access")
-        elif access == AccessLevel.PRO:
+        if access == AccessLevel.PRO:
             st.success("Pro plan — full access")
         elif access == AccessLevel.FREE_REMAINING:
             st.info("Free tier — 1 parse remaining")
@@ -109,7 +107,7 @@ else:
 def show_pricing():
     st.divider()
     st.subheader("Plans")
-    col_free, col_pro, col_team = st.columns(3)
+    col_free, col_pro = st.columns(2)
 
     with col_free:
         st.markdown("### Free")
@@ -117,12 +115,12 @@ def show_pricing():
         for f in FREE_PLAN["features"]:
             st.write(f"• {f}")
 
-    for col, (plan_key, plan) in zip([col_pro, col_team], PLANS.items()):
-        with col:
-            st.markdown(f"### {plan['name']}")
-            st.markdown(f"**{plan['price_display']}**")
-            for f in plan["features"]:
-                st.write(f"• {f}")
+    with col_pro:
+        plan = PLANS["pro"]
+        st.markdown(f"### {plan['name']}")
+        st.markdown(f"**{plan['price_display']}**")
+        for f in plan["features"]:
+            st.write(f"• {f}")
 
 
 # ---------------------------------------------------------------------------

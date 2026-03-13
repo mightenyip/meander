@@ -162,8 +162,6 @@ def get_access_level(email: str) -> str:
     
     # Check paid subscription first
     plan = get_plan(email)
-    if plan == "team":
-        return AccessLevel.TEAM
     if plan == "pro":
         return AccessLevel.PRO
     

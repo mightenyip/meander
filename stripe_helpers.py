@@ -40,17 +40,6 @@ PLANS = {
             "Location breakdown across seasons",
             "Character analysis across episodes",
         ]
-    },
-    "team": {
-        "name": "Team",
-        "price_id": os.environ.get("STRIPE_PRICE_ID_TEAM", ""),
-        "price_display": "$29 / month",
-        "features": [
-            "Everything in Pro",
-            "Up to 5 team members",
-            "Priority support",
-            "Early access to new features",
-        ]
     }
 }
 
