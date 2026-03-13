@@ -59,22 +59,7 @@ if PAYWALL_ENABLED:
             else:
                 with st.spinner("Checking access..."):
                     st.session_state.email = email_input
-                    try:
-                        from auth import get_free_usage, get_subscription
-                        usage_count = get_free_usage(email_input)
-                        sub = get_subscription(email_input)
-                        st.info(f"Debug — usage count: {usage_count}, subscription: {sub}")
-                    except Exception as e:
-                        st.error(f"Debug — Supabase query error: {e}")
-                    current_access = get_access_level(email_input)
-                    # Record email in free_usage on first visit, before any parse
-                    if current_access == AccessLevel.FREE_REMAINING:
-                        try:
-                            record_free_usage(email_input, script_name="")
-                            current_access = get_access_level(email_input)
-                        except Exception as e:
-                            st.error(f"Usage tracking error: {e}")
-                    st.session_state.access = current_access
+                    st.session_state.access = get_access_level(email_input)
 
         access = st.session_state.access
 
@@ -206,6 +191,14 @@ if mode == "Single Script":
             st.code(traceback.format_exc())
         else:
             st.success("Parsing complete!")
+
+            # Record free usage after successful parse
+            if PAYWALL_ENABLED and st.session_state.access == AccessLevel.FREE_REMAINING:
+                try:
+                    record_free_usage(st.session_state.email, uploaded_file.name)
+                    st.session_state.access = get_access_level(st.session_state.email)
+                except Exception:
+                    pass
 
             # Summary stats
             col1, col2, col3, col4 = st.columns(4)
